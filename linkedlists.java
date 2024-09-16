@@ -5,11 +5,11 @@
 // 2. Implement a class that uses queues to determine if a string has balanced paranthesis (Hint: two queues can be used to simulate a stack's behavior)
 // Must be well commented.
 
+import java.util.Arrays; // This is for printing purposes, I'm not cheating
+
 /**
 * Doubly linked list.
 */
-import java.util.Arrays;
-
 class LinkedList {
 
 	int nodes; // # of nodes
@@ -52,7 +52,9 @@ class LinkedList {
 			this.head = newNode;
 			this.tail = newNode;
 		} else { // Otherwise put it after the tail
+			newNode.prev = this.tail; // Define prev pointer
 			this.tail.next = newNode;
+			this.tail = newNode; // and redefine the tail as this new node
 		}
 
 		this.nodes++; // +1 to the node count
@@ -85,10 +87,28 @@ class LinkedList {
 		}
 	}
 
+	/**
+	 * Removes the tail node, returns it.
+	 *
+	 * @return tail node.
+	 */
+	public Node pop() {
+		Node poppable = this.tail; // Record poppable node before we redefine it
+
+		this.tail = poppable.prev; // New tail is previous node (exclude the popped tail)
+		this.tail.next = null; // Tell new tail there is now no next node
+		this.nodes--;
+
+		return poppable;
+	}
+
+	/**
+	 * Prints the linked list.
+	 */
 	public void print() {
 		int[] tempList = new int[nodes];
 
-		Node iterNode = this.head, prev = null; // Define node 0 for iteration purposes
+		Node iterNode = this.head; // Define head node as node 0
 
 		// Iterate through each node
 		for (int i = 0; i < nodes; i++) {
@@ -96,8 +116,36 @@ class LinkedList {
 			iterNode = iterNode.next; // Iterate to next node
 		}
 
-		System.out.println("Nodes:" + this.nodes);
+		System.out.println("Nodes: " + this.nodes);
 		System.out.println(Arrays.toString(tempList));
+	}
+
+	/**
+	 * Returns the linked list as an array.
+	 * 
+	 * @return an array, each element is data of the linked list nodes.
+	 */
+	public int[] getList() {
+		int[] tempList = new int[nodes];
+
+		Node iterNode = this.head; // Define head node as node 0
+
+		// Iterate through each node
+		for (int i = 0; i < nodes; i++) {
+			tempList[i] = iterNode.data; // Add node data to a temp printable list
+			iterNode = iterNode.next; // Iterate to next node
+		}
+
+		return tempList;
+	}
+}
+
+class Stack {
+	LinkedList linkedList;
+	LinkedList.Node top;
+
+	Stack() {
+		
 	}
 }
 
@@ -106,6 +154,8 @@ class Main {
 		LinkedList list = new LinkedList();
 		list.insert(5);
 		list.insert(10);
+		list.pop();
+		list.insert(15);
 		list.print();
 	}
 }
