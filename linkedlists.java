@@ -8,7 +8,7 @@
 import java.util.Arrays; // This is for printing purposes, I'm not cheating
 
 /**
-* Doubly linked list.
+* Doubly linked list that only accepts integers.
 */
 class LinkedList {
 
@@ -90,16 +90,16 @@ class LinkedList {
 	/**
 	 * Removes the tail node, returns it.
 	 *
-	 * @return tail node.
+	 * @return tail node data as an integer.
 	 */
-	public Node pop() {
+	public int pop() {
 		Node poppable = this.tail; // Record poppable node before we redefine it
 
 		this.tail = poppable.prev; // New tail is previous node (exclude the popped tail)
 		this.tail.next = null; // Tell new tail there is now no next node
 		this.nodes--;
 
-		return poppable;
+		return poppable.data;
 	}
 
 	/**
@@ -145,7 +145,34 @@ class Stack {
 	LinkedList.Node top;
 
 	Stack() {
-		
+		linkedList = null;
+		top = null;
+	}
+	
+	public void push(int data) {
+		this.linkedList.insert(data);
+	}
+	
+	public void pop() {
+		this.linkedList.pop();
+	}
+	
+	public boolean isEmpty() {
+		if (this.linkedList.nodes == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public void clear() {
+		for (int i = 0; i < this.linkedList.nodes; i++) {
+			this.linkedList.remove(i);
+		}
+	}
+	
+	public int peek() {
+		return this.linkedList.tail.data;
 	}
 }
 
