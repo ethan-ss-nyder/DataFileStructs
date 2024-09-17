@@ -63,7 +63,7 @@ class LinkedList {
 	/**
 	* Remove a node at specified index.
 	*
-	* @param index: Integer index of the node to be removed.
+	* @param index: Integer index of the node to be removed. Head node is 0.
 	*/
 	public void remove(int index) {
 
@@ -74,6 +74,15 @@ class LinkedList {
 		}
 
 		Node iterNode = this.head, prev = null; // Define node 0 for iteration purposes
+
+		// If head = tail, this is the only node, remove it since we've already checked the index is fine
+		if (iterNode == this. tail) {
+			this.head = null;
+			this.tail == null;
+		} else if (index == 0) { // If the user wants to remove the head, handle it here
+			this.head.next = this.head;
+			this.head.prev = null;
+		}
 
 		// Iterate through nodes in the LL
 		for (int i = 0; i < nodes; i++) {
@@ -142,11 +151,9 @@ class LinkedList {
 
 class Stack {
 	LinkedList linkedList;
-	LinkedList.Node top;
 
 	Stack() {
 		linkedList = null;
-		top = null;
 	}
 	
 	public void push(int data) {
@@ -172,6 +179,42 @@ class Stack {
 	}
 	
 	public int peek() {
+		return this.linkedList.tail.data;
+	}
+}
+
+class Queue {
+	LinkedList linkedList;
+	
+	Queue() {
+		this.linkedList = null;
+	}
+	
+	public void addToQueue(int data) {
+		this.linkedList.insert(data);
+	}
+	
+	public int popQueue() {
+		int data = this.linkedList.head.data;
+		this.linkedList.remove(0); // Remove from back of queue (first LL element)
+		return data;
+	}
+	
+	public boolean isEmpty() {
+		if (this.linkedList.nodes == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public void clear() {
+		for (int i = 0; i < this.linkedList.nodes; i++) {
+			this.linkedList.remove(i);
+		}
+	}
+	
+	public int poll() {
 		return this.linkedList.tail.data;
 	}
 }
