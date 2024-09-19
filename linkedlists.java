@@ -131,7 +131,7 @@ class LinkedList {
 
 	/**
 	 * Returns the linked list as an array.
-	 * 
+	 *
 	 * @return an array, each element is data of the linked list nodes.
 	 */
 	public int[] getList() {
@@ -155,15 +155,15 @@ class Stack {
 	Stack() {
 		linkedList = null;
 	}
-	
+
 	public void push(int data) {
 		this.linkedList.insert(data);
 	}
-	
+
 	public void pop() {
 		this.linkedList.pop();
 	}
-	
+
 	public boolean isEmpty() {
 		if (this.linkedList.nodes == 0) {
 			return true;
@@ -171,13 +171,13 @@ class Stack {
 			return false;
 		}
 	}
-	
+
 	public void clear() {
 		for (int i = 0; i < this.linkedList.nodes; i++) {
 			this.linkedList.remove(i);
 		}
 	}
-	
+
 	public int peek() {
 		return this.linkedList.tail.data;
 	}
@@ -185,21 +185,21 @@ class Stack {
 
 class Queue {
 	LinkedList linkedList;
-	
+
 	Queue() {
 		this.linkedList = null;
 	}
-	
+
 	public void addToQueue(int data) {
 		this.linkedList.insert(data);
 	}
-	
+
 	public int popQueue() {
 		int data = this.linkedList.head.data;
 		this.linkedList.remove(0); // Remove from back of queue (first LL element)
 		return data;
 	}
-	
+
 	public boolean isEmpty() {
 		if (this.linkedList.nodes == 0) {
 			return true;
@@ -207,19 +207,32 @@ class Queue {
 			return false;
 		}
 	}
-	
+
 	public void clear() {
 		for (int i = 0; i < this.linkedList.nodes; i++) {
 			this.linkedList.remove(i);
 		}
 	}
-	
+
 	public int poll() {
 		return this.linkedList.tail.data;
 	}
 }
 
+class StackParanthesisChecker {
+	Stack stack;
+
+	StackParenthesisChecker(Stack x) {
+		this.stack = x;
+	}
+
+	public boolean isBalanced() {
+		
+	}
+}
+
 class Main {
+
 	public static void main(String args[]) {
 		LinkedList list = new LinkedList();
 		list.insert(5);
