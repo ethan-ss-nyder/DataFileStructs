@@ -266,6 +266,9 @@ class StackParenthesisChecker {
         	} else if (value == 1) {
         		closes++; // Count closed parenthesis
         	}
+        	if (opens > closes) { // Because we're reading from the top, we should always have more closers
+        		return false;
+        	}
 		}
 		return opens == closes; // If the LL ends with no extra openers, it's balanced.
 	}
