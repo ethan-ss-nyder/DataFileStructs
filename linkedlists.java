@@ -6,6 +6,7 @@
 // Must be well commented.
 
 import java.util.Arrays; // This is for printing purposes, I'm not cheating
+import java.util.Scanner;
 
 /**
 * Doubly linked list that only accepts integers.
@@ -78,7 +79,7 @@ class LinkedList {
 		// If head = tail, this is the only node, remove it since we've already checked the index is fine
 		if (iterNode == this. tail) {
 			this.head = null;
-			this.tail == null;
+			this.tail = null;
 		} else if (index == 0) { // If the user wants to remove the head, handle it here
 			this.head.next = this.head;
 			this.head.prev = null;
@@ -149,19 +150,23 @@ class LinkedList {
 	}
 }
 
+/**
+* Implementation of a stack data structure.
+* Stacks are first-in last-out structures. push, pop, and peek are the main functions here.
+*/
 class Stack {
 	LinkedList linkedList;
 
 	Stack() {
-		linkedList = null;
+		this.linkedList = new LinkedList();
 	}
 
 	public void push(int data) {
 		this.linkedList.insert(data);
 	}
 
-	public void pop() {
-		this.linkedList.pop();
+	public int pop() {
+		return this.linkedList.pop();
 	}
 
 	public boolean isEmpty() {
@@ -183,11 +188,15 @@ class Stack {
 	}
 }
 
+/**
+* Implementation of a queue data structure.
+* Queues are first-in first-out structures. addToQueue, popQueue and poll are the main functions here.
+*/
 class Queue {
 	LinkedList linkedList;
 
 	Queue() {
-		this.linkedList = null;
+		this.linkedList = new LinkedList();
 	}
 
 	public void addToQueue(int data) {
@@ -219,7 +228,11 @@ class Queue {
 	}
 }
 
-class StackParanthesisChecker {
+/**
+* Utilizing stack structures, this provides a method that determines whether a string of
+* parenthesis is balanced.
+*/
+class StackParenthesisChecker {
 	Stack stack;
 
 	StackParenthesisChecker(Stack x) {
@@ -227,18 +240,82 @@ class StackParanthesisChecker {
 	}
 
 	public boolean isBalanced() {
-		
+		int opens = 0, closes = 0;
+		while (!this.stack.isEmpty()) { // While there are elements in the string...
+			switch (this.stack.pop()) {
+				case 0: opens++; // 0's are openers
+				case 1: closes++; // 1's are closers
+				default: break; // HOPEFULLY there's nothing else
+			}
+		}
+		if (opens == closes) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+}
+
+/**
+* Utilizing queue structures, this provides a method that determines whether a string of
+* parenthesis is balanced.
+*/
+class QueueParenthesisChecker {
+	Queue queue;
+
+	QueueParenthesisChecker(Queue x) {
+		this.queue = x;
+	}
+
+	public boolean isBalanced() {
+		int opens = 0, closes = 0;
+		while (!this.queue.isEmpty()) { // You know the drill
+			switch (this.queue.popQueue()) {
+				case 0: opens++;
+				case 1: closes++;
+				default: break;
+			}
+		}
+		if (opens == closes) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 
 class Main {
 
+	public static Scanner scanner = new Scanner(System.in); // Open scanner for user input
+	public static String userInput = null;
+
+	public static Stack stack = new Stack();
+	public static Queue queue = new Queue();
+
 	public static void main(String args[]) {
-		LinkedList list = new LinkedList();
-		list.insert(5);
-		list.insert(10);
-		list.pop();
-		list.insert(15);
-		list.print();
+		System.out.println("Use Ctrl + C to exit program at any time.");
+		while (true) {
+			System.out.print("Input any string of parenthesis: ");
+			userInput = scanner.next(); // Collect user input
+			for (int i = 0; i < userInput.length(); i++) {
+				switch (Character.toString(userInput.charAt(i))) {
+					case "(":
+						stack.push(0);
+						queue.addToQueue(0);
+					case ")":
+						stack.push(1);
+						queue.addToQueue(1);
+					default:
+						break;
+				}
+			}
+			StackParenthesisChecker stackChecker = new StackParenthesisChecker(stack);
+			QueueParenthesisChecker queueChecker = new QueueParenthesisChecker(queue);
+			if (stackChecker.isBalanced() && queueChecker.isBalanced()) {
+				System.out.println("The input string " + userInput + "has balanced parenthesis.");
+			} else {
+				System.out.println("The input string " + userInput + "does not have balanced parenthesis.");
+			}
+		}
 	}
 }
