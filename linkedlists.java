@@ -74,27 +74,37 @@ class LinkedList {
 			return;
 		}
 
-		Node iterNode = this.head, prev = null; // Define node 0 for iteration purposes
+		Node iterNode = this.head; // Define node 0 for iteration purposes
 
-		// If head = tail, this is the only node, remove it since we've already checked the index is fine
-		if (iterNode == this. tail) {
-			this.head = null;
-			this.tail = null;
-		} else if (index == 0) { // If the user wants to remove the head, handle it here
-			this.head.next = this.head;
-			this.head.prev = null;
-		}
+		if (index == 0) { // Removing the head
+        	if (this.head == this.tail) { // Only one node in the list
+            	this.head = null;
+            	this.tail = null;
+        	} else {
+            	this.head = this.head.next; // Move head to the next node
+            	if (this.head != null) {
+            	    this.head.prev = null; // Set the new head's previous pointer to null
+           		}
+        	}
+        } else {
+        	for (int i = 0; i < index; i++) {
+            	iterNode = iterNode.next;
+        	}
 
-		// Iterate through nodes in the LL
-		for (int i = 0; i < nodes; i++) {
-			if (i == index) { // If we're at the undesireable index...
-				prev.next = iterNode.next; // Link previous node to next node
-				break;
-			} else { // Otherwise define the next node for next iteration
-				prev = iterNode;
-				iterNode = iterNode.next;
-			}
-		}
+        	// Update references for prev and next nodes
+        	if (iterNode.prev != null) {
+            	iterNode.prev.next = iterNode.next;
+        	}
+        	if (iterNode.next != null) {
+        	    iterNode.next.prev = iterNode.prev;
+        	}
+
+        	// If we're removing the tail
+        	if (iterNode == this.tail) {
+            	this.tail = iterNode.prev;
+        	}
+    	}
+		nodes--;
 	}
 
 	/**
@@ -103,10 +113,18 @@ class LinkedList {
 	 * @return tail node data as an integer.
 	 */
 	public int pop() {
+		if (this.tail == null) {
+        	throw new NullPointerException("Cannot pop from an empty list");
+    	}
+	
 		Node poppable = this.tail; // Record poppable node before we redefine it
-
-		this.tail = poppable.prev; // New tail is previous node (exclude the popped tail)
-		this.tail.next = null; // Tell new tail there is now no next node
+		
+		if (poppable.prev == null) { // This handles the case when the poppable node is the last node
+			this.tail = null;
+		} else {
+			this.tail = poppable.prev; // New tail is previous node (exclude the popped tail)
+			this.tail.next = null; // Tell new tail there is now no next node
+		}
 		this.nodes--;
 
 		return poppable.data;
@@ -126,7 +144,6 @@ class LinkedList {
 			iterNode = iterNode.next; // Iterate to next node
 		}
 
-		System.out.println("Nodes: " + this.nodes);
 		System.out.println(Arrays.toString(tempList));
 	}
 
@@ -178,9 +195,9 @@ class Stack {
 	}
 
 	public void clear() {
-		for (int i = 0; i < this.linkedList.nodes; i++) {
-			this.linkedList.remove(i);
-		}
+		this.linkedList.head = null;
+		this.linkedList.tail = null;
+		this.linkedList.nodes = 0;
 	}
 
 	public int peek() {
@@ -218,9 +235,9 @@ class Queue {
 	}
 
 	public void clear() {
-		for (int i = 0; i < this.linkedList.nodes; i++) {
-			this.linkedList.remove(i);
-		}
+		this.linkedList.head = null;
+		this.linkedList.tail = null;
+		this.linkedList.nodes = 0;
 	}
 
 	public int poll() {
@@ -242,17 +259,15 @@ class StackParenthesisChecker {
 	public boolean isBalanced() {
 		int opens = 0, closes = 0;
 		while (!this.stack.isEmpty()) { // While there are elements in the string...
-			switch (this.stack.pop()) {
-				case 0: opens++; // 0's are openers
-				case 1: closes++; // 1's are closers
-				default: break; // HOPEFULLY there's nothing else
-			}
+			int value = this.stack.pop(); // Pop an element from the stack
+
+        	if (value == 0) {
+        	    opens++; // Count open parenthesis
+        	} else if (value == 1) {
+        		closes++; // Count closed parenthesis
+        	}
 		}
-		if (opens == closes) {
-			return true;
-		} else {
-			return false;
-		}
+		return opens == closes; // If the LL ends with no extra openers, it's balanced.
 	}
 }
 
@@ -268,19 +283,20 @@ class QueueParenthesisChecker {
 	}
 
 	public boolean isBalanced() {
-		int opens = 0, closes = 0;
+		int opens = 0;
 		while (!this.queue.isEmpty()) { // You know the drill
-			switch (this.queue.popQueue()) {
-				case 0: opens++;
-				case 1: closes++;
-				default: break;
+			int value = this.queue.popQueue(); // Pop an element from the queue
+			
+			if (value == 0) {
+				opens++; // Count open parenthesis
+			} else if (value == 1) {
+				if (opens == 0) {
+					return false; // In this case, there is no opener to match the closer
+				}
+				opens--; // Every time a closer is found, pop an opener to balance the count
 			}
 		}
-		if (opens == closes) {
-			return true;
-		} else {
-			return false;
-		}
+		return opens == 0; // If the LL ends with no extra openers, it's balanced.
 	}
 }
 
@@ -302,9 +318,11 @@ class Main {
 					case "(":
 						stack.push(0);
 						queue.addToQueue(0);
+						break;
 					case ")":
 						stack.push(1);
 						queue.addToQueue(1);
+						break;
 					default:
 						break;
 				}
@@ -312,10 +330,12 @@ class Main {
 			StackParenthesisChecker stackChecker = new StackParenthesisChecker(stack);
 			QueueParenthesisChecker queueChecker = new QueueParenthesisChecker(queue);
 			if (stackChecker.isBalanced() && queueChecker.isBalanced()) {
-				System.out.println("The input string " + userInput + "has balanced parenthesis.");
+				System.out.println("The input string " + userInput + " has balanced parenthesis.");
 			} else {
-				System.out.println("The input string " + userInput + "does not have balanced parenthesis.");
+				System.out.println("The input string " + userInput + " does not have balanced parenthesis.");
 			}
+			stack.clear();
+			queue.clear();
 		}
 	}
 }
